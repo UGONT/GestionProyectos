@@ -4,32 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAA - Gestión Académica</title>
+    <title>SIGAA - Gestión Académica (Con Bugs)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        /* Un poco de estilo para el sidebar */
-        .sidebar {
-            min-height: 100vh;
-            background-color: #2c3e50;
-            color: white;
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 5px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            background-color: #34495e;
-            color: white;
-            border-radius: 5px;
-        }
-
-        .nav-link i {
-            margin-right: 10px;
-        }
+        .sidebar { min-height: 100vh; background-color: #2c3e50; color: white; }
+        .nav-link { color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; }
+        .nav-link:hover, .nav-link.active { background-color: #34495e; color: white; border-radius: 5px; }
+        .nav-link i { margin-right: 10px; }
     </style>
 </head>
 
@@ -41,8 +23,7 @@
                 <h4 class="text-center mb-4"><i class="bi bi-grid-1x2-fill"></i> Ecosistema</h4>
                 <div class="nav flex-column">
                     <a href="sigaa.html" class="nav-link active"><i class="bi bi-journal-text"></i> SIGAA</a>
-                    <a href="alerta.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Alerta
-                        Temprana</a>
+                    <a href="alerta.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Alerta Temprana</a>
                     <a href="campus.html" class="nav-link"><i class="bi bi-laptop"></i> Campus Virtual</a>
                     <a href="crm.html" class="nav-link"><i class="bi bi-people"></i> CRM Educativo</a>
                 </div>
@@ -51,8 +32,7 @@
             <div class="col-md-10 p-4 bg-light">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="bi bi-journal-text text-primary"></i> Módulo SIGAA</h2>
-                    <button class="btn btn-primary"
-                        onclick="alert('Funcionalidad simulada: Abrir modal de nuevo alumno')">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMatricula">
                         <i class="bi bi-plus-circle"></i> Matricular Alumno
                     </button>
                 </div>
@@ -69,7 +49,7 @@
                     <div class="col-md-4">
                         <div class="card text-white bg-warning mb-3">
                             <div class="card-body">
-                                <h5 class="card-title">Pendientes de Inscripción</h5>
+                                <h5 class="card-title">Pendientes</h5>
                                 <p class="card-text fs-2 fw-bold">45</p>
                             </div>
                         </div>
@@ -85,8 +65,12 @@
                 </div>
 
                 <div class="card shadow-sm">
-                    <div class="card-header bg-white">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Listado Maestro de Estudiantes</h5>
+                        <div class="input-group w-25">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="buscador" placeholder="Buscar alumno..." onkeyup="buscarAlumno()">
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-hover">
@@ -101,9 +85,40 @@
                                 </tr>
                             </thead>
                             <tbody id="tabla-estudiantes">
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalMatricula" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Nueva Matrícula</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formMatricula">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="nuevoNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Carrera</label>
+                            <select class="form-select" id="nuevaCarrera">
+                                <option>Ing. Informática</option>
+                                <option>Enfermería</option>
+                                <option>Derecho</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarAlumno()">Guardar Registro</button>
                 </div>
             </div>
         </div>
@@ -112,8 +127,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // 1. DATOS MOCKEADOS (JSON Array)
-        // Esto simula tu base de datos. Es fácil de editar.
+        // DATOS INICIALES
         const estudiantesMock = [
             { id: "2024001", nombre: "Juan Pérez", carrera: "Ing. Informática", semestre: 3, estado: "Activo" },
             { id: "2024002", nombre: "Maria Gonzalez", carrera: "Enfermería", semestre: 1, estado: "Activo" },
@@ -122,13 +136,12 @@
             { id: "2024005", nombre: "Luis Silva", carrera: "Ing. Informática", semestre: 7, estado: "Activo" }
         ];
 
-        // 2. FUNCIÓN PARA RENDERIZAR LA TABLA
-        function cargarTabla() {
+        // RENDERIZAR TABLA
+        function cargarTabla(datos = estudiantesMock) {
             const tbody = document.getElementById('tabla-estudiantes');
             let html = '';
 
-            estudiantesMock.forEach(est => {
-                // Determinamos el color del badge según el estado
+            datos.forEach(est => {
                 let badgeColor = 'bg-success';
                 if (est.estado === 'En Riesgo') badgeColor = 'bg-warning text-dark';
                 if (est.estado === 'Retirado') badgeColor = 'bg-danger';
@@ -141,25 +154,65 @@
                     <td>${est.semestre}</td>
                     <td><span class="badge ${badgeColor}">${est.estado}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="verFicha('${est.nombre}')"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
                     </td>
                 </tr>
             `;
             });
-
             tbody.innerHTML = html;
         }
 
-        // 3. SIMULACIÓN DE INTERACCIÓN
-        function verFicha(nombre) {
-            alert('Navegando a la ficha académica de: ' + nombre + '\n\n(Aquí se mostrarían sus notas y asistencia)');
+        // ==========================================
+        // AQUÍ ESTÁN LOS BUGS PARA TUS REPORTES
+        // ==========================================
+
+        // BUG 1: DEF-SIGAA-001 (El sistema no guarda el registro)
+        function guardarAlumno() {
+            const nombre = document.getElementById('nuevoNombre').value;
+            const carrera = document.getElementById('nuevaCarrera').value;
+
+            if(nombre === '') {
+                alert("Por favor ingrese un nombre");
+                return;
+            }
+
+            // [BUG INTENCIONAL]: Simulamos que guardamos, pero NO agregamos nada al array 'estudiantesMock'
+            // Debería haber una línea: estudiantesMock.push({ ... }); PERO NO LA PONEMOS.
+            
+            console.log("Simulando guardado de: " + nombre); 
+            
+            // Cerramos el modal y mostramos éxito (Falso positivo)
+            const modalElement = document.getElementById('modalMatricula');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+
+            alert("¡Éxito! Estudiante matriculado correctamente.");
+            
+            // Recargamos la tabla (que sigue teniendo los mismos datos viejos)
+            cargarTabla(); 
         }
 
-        // Inicializar al cargar
-        document.addEventListener('DOMContentLoaded', cargarTabla);
+        // BUG 2: DEF-SIGAA-002 (El filtro de búsqueda no funciona)
+        function buscarAlumno() {
+            const textoBusqueda = document.getElementById('buscador').value.toLowerCase();
+            
+            console.log("Intentando buscar: " + textoBusqueda);
+
+            // [BUG INTENCIONAL]: La lógica de filtrado está comentada/rota.
+            // Aunque escribas, siempre pasamos la lista completa 'estudiantesMock'.
+            
+            /* const filtrados = estudiantesMock.filter(est => 
+                est.nombre.toLowerCase().includes(textoBusqueda)
+            );
+            cargarTabla(filtrados); 
+            */
+
+            // En lugar de filtrar, no hacemos NADA. La tabla se queda estática.
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => cargarTabla());
     </script>
 
 </body>
-
 </html>
