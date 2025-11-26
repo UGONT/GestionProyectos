@@ -162,11 +162,8 @@
             tbody.innerHTML = html;
         }
 
-        // ==========================================
-        // AQUÍ ESTÁN LOS BUGS PARA TUS REPORTES
-        // ==========================================
 
-        // BUG 1: DEF-SIGAA-001 (El sistema no guarda el registro)
+   
         function guardarAlumno() {
             const nombre = document.getElementById('nuevoNombre').value;
             const carrera = document.getElementById('nuevaCarrera').value;
@@ -176,38 +173,34 @@
                 return;
             }
 
-            // [BUG INTENCIONAL]: Simulamos que guardamos, pero NO agregamos nada al array 'estudiantesMock'
-            // Debería haber una línea: estudiantesMock.push({ ... }); PERO NO LA PONEMOS.
             
             console.log("Simulando guardado de: " + nombre); 
             
-            // Cerramos el modal y mostramos éxito (Falso positivo)
+
             const modalElement = document.getElementById('modalMatricula');
             const modal = bootstrap.Modal.getInstance(modalElement);
             modal.hide();
 
-            alert("¡Éxito! Estudiante matriculado correctamente.");
+            alert("Error al ingresar estudiante.")
+            /* alert("¡Éxito! Estudiante matriculado correctamente."); */
             
-            // Recargamos la tabla (que sigue teniendo los mismos datos viejos)
+           
             cargarTabla(); 
         }
 
-        // BUG 2: DEF-SIGAA-002 (El filtro de búsqueda no funciona)
+      
         function buscarAlumno() {
             const textoBusqueda = document.getElementById('buscador').value.toLowerCase();
             
             console.log("Intentando buscar: " + textoBusqueda);
-
-            // [BUG INTENCIONAL]: La lógica de filtrado está comentada/rota.
-            // Aunque escribas, siempre pasamos la lista completa 'estudiantesMock'.
-            
+                     
             /* const filtrados = estudiantesMock.filter(est => 
                 est.nombre.toLowerCase().includes(textoBusqueda)
             );
             cargarTabla(filtrados); 
             */
 
-            // En lugar de filtrar, no hacemos NADA. La tabla se queda estática.
+
         }
 
         // Inicializar

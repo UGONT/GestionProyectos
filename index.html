@@ -208,7 +208,14 @@
 
         setTimeout(() => {
             // Redireccionar al archivo correspondiente
-            window.location.href = destino;
+            if(destino == "campus.html"){
+                console.log("ERROR")
+                alert("Error: Estudiante bloqueado.")
+            }
+            else{
+                window.location.href = destino;
+            }
+            
         }, 1500);
     });
 </script>
