@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        /* ESTÉTICA MEJORADA DEL SIDEBAR */
+        /* ESTÉTICA DEL SIDEBAR */
         .sidebar {
             min-height: 100vh;
             background: linear-gradient(180deg, #1a252f 0%, #2c3e50 100%);
@@ -41,13 +41,14 @@
             margin-bottom: 8px;
             padding: 12px 20px;
             transition: all 0.3s;
-            border-radius: 0 25px 25px 0; /* Borde redondeado a la derecha */
+            border-radius: 0 25px 25px 0;
+            cursor: pointer; /* Importante para que parezca clicable */
         }
 
         .nav-link:hover {
             background-color: rgba(255,255,255,0.1);
             color: white;
-            padding-left: 25px; /* Efecto de deslizamiento */
+            padding-left: 25px;
         }
 
         .nav-link.active {
@@ -57,21 +58,23 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
-        .nav-link i {
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
+        .nav-link i { margin-right: 12px; font-size: 1.1rem; }
 
-        /* [BUG INTENCIONAL - DEF-CV-002] 
-           Forzamos un ancho fijo gigante para romper el responsive en móviles */
+        /* [BUG INTENCIONAL - DEF-CV-002] Responsive Roto */
         .tarjeta-curso-bug {
-            min-width: 900px; /* Ancho forzado superior a cualquier celular */
+            min-width: 900px;
             overflow: hidden;
         }
         
-        /* Ocultar scrollbar horizontal general para forzar el error visual en la tarjeta */
-        .container-bug {
-            overflow-x: hidden; 
+        .container-bug { overflow-x: hidden; }
+
+        /* Clases para ocultar/mostrar secciones */
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -80,83 +83,226 @@
 
     <div class="container-fluid container-bug">
         <div class="row">
-            <!-- SIDEBAR DEL ESTUDIANTE -->
-            <div class="col-md-2 sidebar p-0 d-none d-md-block">
-                
-                <!-- Perfil del Alumno -->
+            <!-- SIDEBAR -->
+            <div class="col-md-2 sidebar p-0 d-none d-md-block fixed-top" style="height: 100vh; z-index: 1000; width: 16.666667%;">
                 <div class="user-profile">
-                    <div class="user-avatar">
-                        <i class="bi bi-person"></i>
-                    </div>
+                    <div class="user-avatar"><i class="bi bi-person"></i></div>
                     <h6 class="mb-0">Juan Pérez</h6>
                     <small class="text-white-50">Ing. Informática</small>
                 </div>
 
-                <!-- Menú de Navegación Estudiantil -->
                 <div class="nav flex-column pe-3">
-                    <a href="#" class="nav-link active"><i class="bi bi-laptop"></i> Mis Cursos</a>
-                    <a href="#" class="nav-link"><i class="bi bi-calendar-week"></i> Mi Horario</a>
-                    <a href="#" class="nav-link"><i class="bi bi-file-earmark-spreadsheet"></i> Calificaciones</a> <!-- Aquí vería el NaN -->
-                    <a href="#" class="nav-link"><i class="bi bi-chat-dots"></i> Foro Estudiantil</a>
-                    <a href="#" class="nav-link"><i class="bi bi-file-pdf"></i> Certificados</a>
-                    <a href="#" class="nav-link"><i class="bi bi-cash-coin"></i> Pagos y Deudas</a>
+                    <a onclick="showSection('cursos')" class="nav-link active" id="link-cursos"><i class="bi bi-laptop"></i> Mis Cursos</a>
+                    <a onclick="showSection('horario')" class="nav-link" id="link-horario"><i class="bi bi-calendar-week"></i> Mi Horario</a>
+                    <a onclick="showSection('notas')" class="nav-link" id="link-notas"><i class="bi bi-file-earmark-spreadsheet"></i> Calificaciones</a>
+                    <a onclick="showSection('certificados')" class="nav-link" id="link-certificados"><i class="bi bi-file-pdf"></i> Certificados</a>
+                    <a onclick="showSection('pagos')" class="nav-link" id="link-pagos"><i class="bi bi-cash-coin"></i> Pagos</a>
                     
                     <div class="mt-5 border-top border-secondary pt-3">
-                        <a href="#" class="nav-link text-warning"><i class="bi bi-gear"></i> Configuración</a>
                         <a href="index.html" class="nav-link text-danger"><i class="bi bi-box-arrow-left"></i> Cerrar Sesión</a>
                     </div>
                 </div>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL -->
-            <div class="col-md-10 p-4 bg-light">
+            <!-- CONTENIDO PRINCIPAL (Offset por el sidebar fijo) -->
+            <div class="col-md-10 offset-md-2 p-4 bg-light" style="min-height: 100vh;">
+                
+                <!-- HEADER COMÚN -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold text-dark">Mi Aula Virtual</h2>
-                        <p class="text-muted mb-0">Bienvenido al ciclo académico 2025-1</p>
+                        <h2 class="fw-bold text-dark" id="page-title">Mi Aula Virtual</h2>
+                        <p class="text-muted mb-0">Ciclo Académico 2025-1</p>
                     </div>
                     <button class="btn btn-outline-primary position-relative">
                         <i class="bi bi-bell"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
-                        </span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
                     </button>
                 </div>
 
-        
+                <!-- AVISO DE BUG MOVIL -->
                 <div class="alert alert-warning d-md-none">
-                    <small><strong>Modo Test:</strong> El diseño responsive está roto.</small>
+                    <small><strong>Modo Test:</strong> Diseño responsive roto intencionalmente (DEF-CV-002).</small>
                 </div>
 
-                <!-- GRID DE CURSOS  -->
-                <div class="row" id="grid-cursos">
-                    <!-- JS llenará esto -->
-                </div>
-
-                <!-- SECCIÓN LATERAL (Tareas y Anuncios) -->
-                <div class="row mt-5">
-                    <div class="col-md-8">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-header bg-white border-bottom-0 pt-4">
-                                <h5 class="fw-bold"><i class="bi bi-clock-history text-primary"></i> Próximas Entregas</h5>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush" id="lista-tareas">
-                                    <!-- JS -->
-                                </ul>
-                            </div>
-                        </div>
+                <!-- ========================================== -->
+                <!-- SECCIÓN 1: MIS CURSOS (Grid con Bug)       -->
+                <!-- ========================================== -->
+                <div id="section-cursos" class="content-section active">
+                    <div class="row" id="grid-cursos">
+                        <!-- JS llena esto -->
                     </div>
-                    <div class="col-md-4">
-                        <div class="card bg-primary text-white shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5><i class="bi bi-info-circle"></i> Comunicado</h5>
-                                <p class="small">Recuerda que el plazo para la inscripción de asignaturas electivas finaliza este viernes.</p>
-                                <button class="btn btn-sm btn-light text-primary fw-bold">Ver más</button>
+                    
+                    <!-- Widgets Laterales -->
+                    <div class="row mt-5">
+                        <div class="col-md-8">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white pt-4 border-bottom-0">
+                                    <h5 class="fw-bold"><i class="bi bi-clock-history text-primary"></i> Próximas Entregas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush" id="lista-tareas">
+                                        <!-- JS llena esto -->
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 2: HORARIO                         -->
+                <!-- ========================================== -->
+                <div id="section-horario" class="content-section">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Hora</th>
+                                            <th>Lunes</th>
+                                            <th>Martes</th>
+                                            <th>Miércoles</th>
+                                            <th>Jueves</th>
+                                            <th>Viernes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="bg-light fw-bold">08:30 - 10:00</td>
+                                            <td class="table-primary">Desarrollo Web<br><small>Lab 301</small></td>
+                                            <td></td>
+                                            <td class="table-info">Base de Datos<br><small>Lab 204</small></td>
+                                            <td></td>
+                                            <td class="table-primary">Desarrollo Web<br><small>Lab 301</small></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-light fw-bold">10:15 - 11:45</td>
+                                            <td></td>
+                                            <td class="table-warning">Ética Prof.<br><small>Sala 105</small></td>
+                                            <td></td>
+                                            <td class="table-info">Base de Datos<br><small>Lab 204</small></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 3: CALIFICACIONES (Con Bug NaN)    -->
+                <!-- ========================================== -->
+                <div id="section-notas" class="content-section">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Resumen de Notas</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Asignatura</th>
+                                        <th>Evaluación 1 (30%)</th>
+                                        <th>Evaluación 2 (30%)</th>
+                                        <th>Evaluación 3 (40%)</th>
+                                        <th>Promedio Final</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="ps-4 fw-bold">Desarrollo Web</td>
+                                        <td>6.5</td>
+                                        <td>5.8</td>
+                                        <td>-</td>
+                                        <td class="fw-bold text-primary">6.1</td>
+                                        <td><span class="badge bg-success">Aprobando</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ps-4 fw-bold">Ética Profesional</td>
+                                        <td>7.0</td>
+                                        <td>6.8</td>
+                                        <td>7.0</td>
+                                        <td class="fw-bold text-primary">6.9</td>
+                                        <td><span class="badge bg-success">Aprobado</span></td>
+                                    </tr>
+                                    <!-- BUG INTENCIONAL NaN -->
+                                    <tr class="table-danger border-danger">
+                                        <td class="ps-4 fw-bold">Base de Datos</td>
+                                        <td>3.5</td>
+                                        <td>2.0</td>
+                                        <td>-</td>
+                                        <!-- Aquí mostramos el NaN explícitamente -->
+                                        <td class="fw-bold text-danger fs-5">NaN</td>
+                                        <td><span class="badge bg-danger">Error Cálculo</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-3 text-muted small bg-light">
+                                <i class="bi bi-info-circle"></i> Si ves "NaN" en tu promedio, contacta a Secretaría Académica.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 4: CERTIFICADOS                    -->
+                <!-- ========================================== -->
+                <div id="section-certificados" class="content-section">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body text-center p-5">
+                                    <i class="bi bi-file-earmark-person display-1 text-primary mb-3"></i>
+                                    <h4>Alumno Regular</h4>
+                                    <p class="text-muted">Para trámites de transporte y asignación familiar.</p>
+                                    <button class="btn btn-primary" onclick="alert('Descargando PDF...')"><i class="bi bi-download"></i> Descargar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body text-center p-5">
+                                    <i class="bi bi-mortarboard display-1 text-success mb-3"></i>
+                                    <h4>Concentración de Notas</h4>
+                                    <p class="text-muted">Historial completo de asignaturas cursadas.</p>
+                                    <button class="btn btn-success" onclick="alert('Descargando PDF...')"><i class="bi bi-download"></i> Descargar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 5: PAGOS                           -->
+                <!-- ========================================== -->
+                <div id="section-pagos" class="content-section">
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                        <div>
+                            <strong>Estás al día</strong>
+                            <p class="mb-0">No tienes deudas pendientes para este semestre.</p>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Historial de Pagos 2025</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Mensualidad Marzo
+                                <span class="badge bg-success rounded-pill">Pagado 05/03/2025</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Matrícula 2025
+                                <span class="badge bg-success rounded-pill">Pagado 15/01/2025</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -164,10 +310,38 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // DATOS MOCK
+        // LÓGICA DE NAVEGACIÓN (SPA)
+        function showSection(sectionId) {
+            // 1. Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+
+            // 2. Desactivar todos los links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // 3. Mostrar sección seleccionada
+            document.getElementById('section-' + sectionId).classList.add('active');
+            document.getElementById('link-' + sectionId).classList.add('active');
+
+            // 4. Cambiar título dinámicamente
+            const titulos = {
+                'cursos': 'Mi Aula Virtual',
+                'horario': 'Horario Semanal',
+                'notas': 'Mis Calificaciones',
+                'certificados': 'Certificados Digitales',
+                'pagos': 'Portal de Pagos'
+            };
+            document.getElementById('page-title').innerText = titulos[sectionId];
+        }
+
+        // ==========================================
+        // CARGA DE DATOS PARA SECCIÓN CURSOS
+        // ==========================================
         const cursosMock = [
             { materia: "Desarrollo Web", profe: "Ing. Torvalds", progreso: 75, img: "bi-code-slash", color: "primary" },
-            
             { materia: "Base de Datos", profe: "Dra. Codd", progreso: "NaN", img: "bi-database", color: "success" }, 
             { materia: "Ética Profesional", profe: "Lic. Kant", progreso: 100, img: "bi-book", color: "warning" }
         ];
@@ -178,12 +352,11 @@
         cursosMock.forEach(c => {
             let anchoBarra = c.progreso === 'NaN' ? 0 : c.progreso;
             
+            // TARJETA CON BUG RESPONSIVE (.tarjeta-curso-bug)
             htmlCursos += `
             <div class="col-12 mb-4">
                 <div class="card shadow-sm border-0 tarjeta-curso-bug">
                     <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                        
-                        <!-- Icono y Texto -->
                         <div class="d-flex align-items-center">
                             <div class="rounded-3 p-3 bg-${c.color} bg-opacity-10 me-4">
                                 <i class="bi ${c.img} display-6 text-${c.color}"></i>
@@ -191,7 +364,6 @@
                             <div>
                                 <h4 class="card-title fw-bold mb-1">${c.materia}</h4>
                                 <p class="card-text text-muted mb-2"><i class="bi bi-person-badge"></i> ${c.profe}</p>
-                                
                                 <div class="d-flex align-items-center" style="min-width: 300px;">
                                     <div class="progress flex-grow-1 me-3" style="height: 8px;">
                                         <div class="progress-bar bg-${c.color}" style="width: ${anchoBarra}%"></div>
@@ -201,8 +373,7 @@
                             </div>
                         </div>
                         
-                        <!-- BOTÓN CON BUG (DEF-CV-001) -->
-                        <!-- Este botón quedará fuera de pantalla en móvil debido al ancho fijo de la tarjeta -->
+                        <!-- BOTÓN CON BUG (No hace nada) -->
                         <div class="ms-5 border-start ps-5">
                              <button class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm" onclick="botonMuerto()">
                                 Ir a clase <i class="bi bi-arrow-right ms-2"></i>
@@ -211,7 +382,6 @@
                                 <small class="text-muted"><i class="bi bi-camera-video"></i> Síncrono</small>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -239,7 +409,7 @@
         `;
 
         function botonMuerto(){
-            // No hace nada, simulando enlace roto
+            console.log("Bug: El botón no redirige.");
         }
     </script>
 

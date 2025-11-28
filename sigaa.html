@@ -8,10 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        /* ESTÉTICA SIGAA - Institucional y Seria */
+        /* ESTÉTICA SIGAA - Institucional */
         .sidebar {
             min-height: 100vh;
-            background-color: #003366; /* Azul Oscuro Institucional */
+            background-color: #003366; /* Azul Institucional */
             color: white;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
@@ -28,29 +28,42 @@
             margin: 5px 15px;
             padding: 10px 15px;
             border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
         .nav-link:hover {
             background-color: rgba(255,255,255,0.1);
             color: white;
+            padding-left: 20px;
         }
 
         .nav-link.active {
             background-color: #0056b3;
             color: white;
             font-weight: bold;
+            border-left: 4px solid #3498db;
         }
 
-        /* Avatar pequeño para el admin */
         .admin-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background-color: #6c757d;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* SPA Logic */
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeEffect 0.4s; }
+
+        @keyframes fadeEffect {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
         }
     </style>
 </head>
@@ -59,30 +72,42 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- SIDEBAR ADMINISTRATIVO -->
-            <div class="col-md-2 sidebar p-0 d-none d-md-block">
+            <!-- SIDEBAR -->
+            <div class="col-md-2 sidebar p-0 d-none d-md-block fixed-top" style="height: 100vh; width: 16.666667%;">
                 <div class="brand-section">
                     <h5 class="mb-0 fw-bold"><i class="bi bi-bank2"></i> SIGAA v2.0</h5>
                     <small class="text-white-50">Gestión Académica</small>
                 </div>
                 
-                <div class="p-3 d-flex align-items-center border-bottom border-white-50 mb-3">
-                    <div class="admin-avatar me-2"><i class="bi bi-person-fill"></i></div>
+                <div class="p-3 d-flex align-items-center border-bottom border-white-50 mb-3 bg-dark bg-opacity-25">
+                    <div class="admin-avatar me-3"><i class="bi bi-person-fill fs-5"></i></div>
                     <div style="line-height: 1.2;">
-                        <span class="d-block fw-bold" style="font-size: 0.9rem;">Patricio Núñez</span>
-                        <small class="text-white-50" style="font-size: 0.75rem;">Director Académico</small>
+                        <span class="d-block fw-bold">Patricio Núñez</span>
+                        <small class="text-white-50">Director Académico</small>
                     </div>
                 </div>
 
                 <div class="nav flex-column">
                     <small class="text-white-50 text-uppercase px-4 mb-2 fw-bold" style="font-size: 0.7rem;">Registro Curricular</small>
-                    <a href="#" class="nav-link active"><i class="bi bi-people-fill me-2"></i> Estudiantes</a>
-                    <a href="#" class="nav-link"><i class="bi bi-briefcase-fill me-2"></i> Docentes</a>
-                    <a href="#" class="nav-link"><i class="bi bi-journal-bookmark-fill me-2"></i> Malla y Cursos</a>
+                    
+                    <a onclick="showSection('estudiantes')" class="nav-link active" id="link-estudiantes">
+                        <i class="bi bi-people-fill me-2"></i> Estudiantes
+                    </a>
+                    <a onclick="showSection('docentes')" class="nav-link" id="link-docentes">
+                        <i class="bi bi-briefcase-fill me-2"></i> Docentes
+                    </a>
+                    <a onclick="showSection('malla')" class="nav-link" id="link-malla">
+                        <i class="bi bi-journal-bookmark-fill me-2"></i> Malla y Cursos
+                    </a>
                     
                     <small class="text-white-50 text-uppercase px-4 mb-2 mt-3 fw-bold" style="font-size: 0.7rem;">Administración</small>
-                    <a href="#" class="nav-link"><i class="bi bi-file-earmark-text me-2"></i> Certificados</a>
-                    <a href="#" class="nav-link"><i class="bi bi-gear-fill me-2"></i> Configuración</a>
+                    
+                    <a onclick="showSection('certificados')" class="nav-link" id="link-certificados">
+                        <i class="bi bi-file-earmark-text me-2"></i> Certificados
+                    </a>
+                    <a onclick="showSection('config')" class="nav-link" id="link-config">
+                        <i class="bi bi-gear-fill me-2"></i> Configuración
+                    </a>
                     
                     <div class="mt-5 px-3">
                         <a href="index.html" class="btn btn-outline-light w-100 btn-sm"><i class="bi bi-power"></i> Cerrar Sesión</a>
@@ -91,51 +116,214 @@
             </div>
 
             <!-- CONTENIDO PRINCIPAL -->
-            <div class="col-md-10 p-4 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-dark fw-bold">Listado Maestro de Estudiantes</h2>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMatricula">
-                        <i class="bi bi-person-plus-fill"></i> Nueva Matrícula
-                    </button>
+            <div class="col-md-10 offset-md-2 p-4 bg-light" style="min-height: 100vh;">
+                
+                <!-- HEADER GLOBAL -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <h2 class="text-dark fw-bold" id="page-title">Gestión de Estudiantes</h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Panel Administrativo</li>
+                        </ol>
+                    </nav>
                 </div>
 
-                <!-- CARD TABLE -->
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 text-muted">Registros Activos</h5>
-                        
-                        <!-- BUG INTENCIONAL 1 (DEF-SIGAA-002): BUSCADOR ROTO -->
-                        <div class="input-group w-25">
-                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" id="buscador" placeholder="Buscar por RUT o Nombre..." onkeyup="buscarAlumno()">
+                <!-- ========================================== -->
+                <!-- SECCIÓN 1: ESTUDIANTES (Con Bugs)          -->
+                <!-- ========================================== -->
+                <div id="section-estudiantes" class="content-section active">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary active">Activos</button>
+                            <button class="btn btn-outline-secondary">Egresados</button>
+                            <button class="btn btn-outline-secondary">Retirados</button>
+                        </div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMatricula">
+                            <i class="bi bi-person-plus-fill"></i> Nueva Matrícula
+                        </button>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 text-muted">Registros Activos</h5>
+                            
+                            <!-- BUG 1 (DEF-SIGAA-002): BUSCADOR ROTO -->
+                            <div class="input-group w-25">
+                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" id="buscador" placeholder="Buscar alumno..." onkeyup="buscarAlumno()">
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-striped table-hover mb-0 align-middle">
+                                <thead class="bg-light text-secondary">
+                                    <tr>
+                                        <th class="ps-4">ID / RUT</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Carrera</th>
+                                        <th>Semestre</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-estudiantes">
+                                    <!-- JS Load -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-striped table-hover mb-0 align-middle">
-                            <thead class="bg-light text-secondary">
-                                <tr>
-                                    <th class="ps-4">ID / RUT</th>
-                                    <th>Nombre Completo</th>
-                                    <th>Carrera</th>
-                                    <th>Semestre</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-estudiantes">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card-footer bg-white py-3">
-                        <small class="text-muted">Mostrando 5 de 2500 registros</small>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 2: DOCENTES                        -->
+                <!-- ========================================== -->
+                <div id="section-docentes" class="content-section">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold">Planta Docente 2025</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table mb-0">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th class="ps-4">Nombre Docente</th>
+                                                <th>Departamento</th>
+                                                <th>Carga Horaria</th>
+                                                <th>Contrato</th>
+                                                <th>Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">Ing. Linus Torvalds</td>
+                                                <td>Informática</td>
+                                                <td>22 Horas</td>
+                                                <td><span class="badge bg-success">Indefinido</span></td>
+                                                <td><button class="btn btn-sm btn-outline-primary">Ver Carga</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">Dra. Grace Hopper</td>
+                                                <td>Ciencias Básicas</td>
+                                                <td>44 Horas</td>
+                                                <td><span class="badge bg-success">Indefinido</span></td>
+                                                <td><button class="btn btn-sm btn-outline-primary">Ver Carga</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">Lic. Edgar Codd</td>
+                                                <td>Informática</td>
+                                                <td>12 Horas</td>
+                                                <td><span class="badge bg-warning text-dark">Plazo Fijo</span></td>
+                                                <td><button class="btn btn-sm btn-outline-primary">Ver Carga</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 3: MALLA Y CURSOS                  -->
+                <!-- ========================================== -->
+                <div id="section-malla" class="content-section">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle-fill me-2"></i> Editando Malla Curricular: <strong>Ingeniería en Informática (Plan 2023)</strong>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3 border-start border-4 border-primary">
+                                <div class="card-body">
+                                    <h6>Semestre 1</h6>
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item">Introducción a la Programación</li>
+                                        <li class="list-group-item">Matemáticas I</li>
+                                        <li class="list-group-item">Comunicación Efectiva</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3 border-start border-4 border-success">
+                                <div class="card-body">
+                                    <h6>Semestre 3</h6>
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item">Base de Datos Relacionales</li>
+                                        <li class="list-group-item">Programación Web</li>
+                                        <li class="list-group-item">Inglés Técnico I</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3 border-start border-4 border-warning">
+                                <div class="card-body">
+                                    <h6>Semestre 5</h6>
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item">Arquitectura de Software</li>
+                                        <li class="list-group-item">Gestión de Proyectos TI</li>
+                                        <li class="list-group-item">Inteligencia Artificial</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- SECCIÓN 4: CERTIFICADOS (Admin)            -->
+                <!-- ========================================== -->
+                <div id="section-certificados" class="content-section">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center p-5">
+                            <i class="bi bi-printer display-1 text-muted mb-3"></i>
+                            <h4>Generador de Certificados Masivos</h4>
+                            <p class="text-muted mb-4">Seleccione el tipo de documento para generar en lote para toda una sección.</p>
+                            
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-outline-dark"><i class="bi bi-file-earmark-person"></i> Alumno Regular</button>
+                                <button class="btn btn-outline-dark"><i class="bi bi-mortarboard"></i> Títulos en Trámite</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- ========================================== -->
+                <!-- SECCIÓN 5: CONFIGURACIÓN                   -->
+                <!-- ========================================== -->
+                <div id="section-config" class="content-section">
+                    <div class="card">
+                        <div class="card-header fw-bold">Parámetros del Sistema</div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3 row">
+                                    <label class="col-sm-2 col-form-label">Periodo Activo</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" value="2025-1" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-sm-2 col-form-label">Estado Matrícula</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">Abierta</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="alert('Configuración guardada')">Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- MODAL MATRICULA -->
+    <!-- MODAL MATRICULA (CON BUG DE GUARDADO) -->
     <div class="modal fade" id="modalMatricula" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -147,7 +335,7 @@
                     <form id="formMatricula">
                         <div class="mb-3">
                             <label class="form-label">RUT Estudiante</label>
-                            <input type="text" class="form-control" required>
+                            <input type="text" class="form-control" placeholder="12.345.678-9" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Nombre Completo</label>
@@ -165,7 +353,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <!-- BUG INTENCIONAL 2 (DEF-SIGAA-001): CLICK NO GUARDA -->
+                    <!-- BUG 2: Click no guarda -->
                     <button type="button" class="btn btn-primary" onclick="guardarAlumno()">Confirmar Matrícula</button>
                 </div>
             </div>
@@ -175,6 +363,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // SPA NAVIGATION LOGIC
+        function showSection(sectionId) {
+            // Ocultar todas
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            // Mostrar seleccionada
+            document.getElementById('section-' + sectionId).classList.add('active');
+            document.getElementById('link-' + sectionId).classList.add('active');
+
+            // Actualizar Título
+            const titles = {
+                'estudiantes': 'Gestión de Estudiantes',
+                'docentes': 'Planta Docente y Cargas',
+                'malla': 'Administración Curricular',
+                'certificados': 'Emisión de Documentos',
+                'config': 'Configuración del Sistema'
+            };
+            document.getElementById('page-title').innerText = titles[sectionId];
+        }
+
+        // DATOS MOCK
         const estudiantesMock = [
             { id: "20.123.456-7", nombre: "Juan Pérez", carrera: "Ing. Informática", semestre: 3, estado: "Activo" },
             { id: "19.876.543-2", nombre: "Maria Gonzalez", carrera: "Enfermería", semestre: 1, estado: "Activo" },
@@ -208,26 +418,31 @@
             tbody.innerHTML = html;
         }
 
-        
+        // ============================================
+        // BUGS INTENCIONALES (Para testing)
+        // ============================================
+
+        // BUG 1 (DEF-SIGAA-001): Simula éxito pero no guarda en el array
         function guardarAlumno() {
-            
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalMatricula'));
             modal.hide();
-
-            // Mensaje de éxito falso
-            alert("¡Matrícula realizada exitosamente!");
             
-            // Recargamos la tabla 
+            // Falso positivo
+            alert("¡Matrícula realizada exitosamente!\n(Sistema: Datos enviados al servidor...)");
+            
+            // Recargamos la tabla sin haber hecho push al array estudiantesMock
             cargarTabla();
+            console.warn("BUG EJECUTADO: Datos no persistidos.");
         }
 
-        // BUG 2: BUSCADOR ROTO
+        // BUG 2 (DEF-SIGAA-002): Evento dispara pero no filtra
         function buscarAlumno() {
             const val = document.getElementById('buscador').value;
-            console.log("Escribiendo: " + val);
-            // No hay lógica de filtrado aquí. La tabla no cambia.
+            console.log("Buscando: " + val);
+            // Falta lógica de filtrado array.filter(...)
         }
 
+        // Init
         cargarTabla();
     </script>
 

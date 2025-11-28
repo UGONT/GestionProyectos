@@ -11,7 +11,7 @@
         /* ESTÉTICA SIDEBAR DOCENTE */
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%); /* Tono más sobrio para docentes */
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
             color: white;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
@@ -26,7 +26,7 @@
         .user-avatar {
             width: 80px;
             height: 80px;
-            background-color: #16a085; /* Verde azulado para docentes */
+            background-color: #16a085; /* Verde azulado */
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -42,6 +42,7 @@
             padding: 12px 20px;
             transition: all 0.3s;
             border-radius: 0 25px 25px 0;
+            cursor: pointer;
         }
 
         .nav-link:hover {
@@ -51,7 +52,7 @@
         }
 
         .nav-link.active {
-            background-color: #16a085; /* Color activo docente */
+            background-color: #16a085;
             color: white;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
@@ -69,6 +70,15 @@
             justify-content: center;
             color: #adb5bd;
         }
+
+        /* SPA Logic */
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeEffect 0.4s; }
+
+        @keyframes fadeEffect {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
     </style>
 </head>
 
@@ -77,28 +87,31 @@
     <div class="container-fluid">
         <div class="row">
             <!-- SIDEBAR DOCENTE -->
-            <div class="col-md-2 sidebar p-0 d-none d-md-block">
+            <div class="col-md-2 sidebar p-0 d-none d-md-block fixed-top" style="height: 100vh; width: 16.666667%;">
                 
-                <!-- Perfil -->
                 <div class="user-profile">
-                    <div class="user-avatar">
-                        <i class="bi bi- eyeglasses"></i>
-                    </div>
+                    <div class="user-avatar"><i class="bi bi-eyeglasses"></i></div>
                     <h6 class="mb-0">Dra. Codd</h6>
                     <small class="text-white-50">Facultad de Ingeniería</small>
                 </div>
 
-                <!-- Menú -->
                 <div class="nav flex-column pe-3">
-                    <a href="#" class="nav-link"><i class="bi bi-journal-bookmark"></i> Mis Asignaturas</a>
-                    <a href="#" class="nav-link"><i class="bi bi-pencil-square"></i> Ingreso de Notas</a>
-                    <a href="#" class="nav-link"><i class="bi bi-check2-square"></i> Registro Asistencia</a>
+                    <a onclick="showSection('dashboard')" class="nav-link active" id="link-dashboard">
+                        <i class="bi bi-exclamation-triangle"></i> Monitor de Riesgo
+                    </a>
                     
                     <div class="my-2 border-top border-secondary mx-3"></div>
-                    <small class="text-white-50 ms-3 mb-2 text-uppercase" style="font-size: 0.7rem;">Gestión de Retención</small>
-                    
-                    <a href="#" class="nav-link active"><i class="bi bi-exclamation-triangle"></i> Alerta Temprana</a>
-                    <a href="#" class="nav-link"><i class="bi bi-chat-left-text"></i> Notificaciones Tutor</a>
+                    <small class="text-white-50 ms-3 mb-2 text-uppercase" style="font-size: 0.7rem;">Gestión Académica</small>
+
+                    <a onclick="showSection('asignaturas')" class="nav-link" id="link-asignaturas">
+                        <i class="bi bi-journal-bookmark"></i> Mis Asignaturas
+                    </a>
+                    <a onclick="showSection('notas')" class="nav-link" id="link-notas">
+                        <i class="bi bi-pencil-square"></i> Ingreso de Notas
+                    </a>
+                    <a onclick="showSection('asistencia')" class="nav-link" id="link-asistencia">
+                        <i class="bi bi-check2-square"></i> Asistencia
+                    </a>
                     
                     <div class="mt-5 pt-3 mx-3">
                         <a href="index.html" class="btn btn-outline-light w-100 btn-sm"><i class="bi bi-box-arrow-left"></i> Cerrar Sesión</a>
@@ -107,80 +120,172 @@
             </div>
 
             <!-- CONTENIDO PRINCIPAL -->
-            <div class="col-md-10 p-4 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="col-md-10 offset-md-2 p-4 bg-light" style="min-height: 100vh;">
+                
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                     <div>
-                        <h2 class="mb-1"><i class="bi bi-exclamation-triangle text-danger"></i> Monitor de Riesgo Académico</h2>
-                        <p class="text-muted mb-0">Asignatura: Base de Datos Relacionales (Sec. 001)</p>
+                        <h2 class="mb-1 fw-bold text-dark" id="page-title">Monitor de Riesgo Académico</h2>
+                        <p class="text-muted mb-0">Ciclo 2025-1 | Última actualización: Hace 5 min</p>
                     </div>
                     <div>
                         <button class="btn btn-light border shadow-sm me-2"><i class="bi bi-download"></i> Exportar</button>
-                        <button class="btn btn-primary"><i class="bi bi-envelope"></i> Notificar a Todos</button>
                     </div>
                 </div>
 
-                <!-- KPIs Superiores -->
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card border-start border-4 border-danger shadow-sm h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted text-uppercase mb-1">Riesgo Crítico</h6>
-                                        <h2 class="mb-0 fw-bold text-danger">12</h2>
-                                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +2 desde ayer</small>
-                                    </div>
-                                    <div class="fs-1 text-danger opacity-25"><i class="bi bi-lightning-fill"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="col-md-8">
-                        <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
-                                <h6 class="mb-0 fw-bold">Distribución de Riesgo por Factor (IA)</h6>
-                            </div>
-                            <div class="card-body p-2">
-                                <!-- Aquí debería ir un gráfico Chart.js -->
-                                <div class="chart-placeholder-bug">
-                                    <div class="text-center">
-                                        <i class="bi bi-image-alt fs-1 d-block mb-2"></i>
-                                        <span>Error de carga: recurso /api/charts/risk-distribution no encontrado (404)</span>
+                <!-- ============================================ -->
+                <!-- SECCIÓN 1: DASHBOARD DE RIESGO (Con Bugs)    -->
+                <!-- ============================================ -->
+                <div id="section-dashboard" class="content-section active">
+                    <!-- KPIs -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card border-start border-4 border-danger shadow-sm h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted text-uppercase mb-1">Riesgo Crítico</h6>
+                                            <h2 class="mb-0 fw-bold text-danger">12</h2>
+                                            <small class="text-danger"><i class="bi bi-arrow-up"></i> +2 desde ayer</small>
+                                        </div>
+                                        <div class="fs-1 text-danger opacity-25"><i class="bi bi-lightning-fill"></i></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- BUG 1 (DEF-SAT-001): Gráfico 404 -->
+                        <div class="col-md-8">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-white py-2">
+                                    <h6 class="mb-0 fw-bold">Distribución de Riesgo por Factor (IA)</h6>
+                                </div>
+                                <div class="card-body p-2">
+                                    <div class="chart-placeholder-bug">
+                                        <div class="text-center">
+                                            <i class="bi bi-image-alt fs-1 d-block mb-2"></i>
+                                            <span>Error de carga: recurso /api/charts/risk-distribution no encontrado (404)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Riesgo (Con Bug Lógico de Color) -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                            <h5 class="mb-0 fw-bold">Estudiantes en Seguimiento</h5>
+                            <div class="input-group w-25">
+                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Filtrar por nombre...">
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Estudiante</th>
+                                        <th>Causa Principal (IA)</th>
+                                        <th style="width: 30%;">Probabilidad Deserción</th>
+                                        <th>Asistencia</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-riesgo">
+                                    <!-- JS Load -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tabla de Estudiantes -->
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h5 class="mb-0 fw-bold">Estudiantes en Seguimiento</h5>
-                        <div class="input-group w-25">
-                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Filtrar por nombre...">
+                <!-- ============================================ -->
+                <!-- SECCIÓN 2: MIS ASIGNATURAS                   -->
+                <!-- ============================================ -->
+                <div id="section-asignaturas" class="content-section">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-top border-4 border-primary shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">Base de Datos Relacionales</h5>
+                                    <p class="card-text text-muted">Sección 001-D (Diurno)</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="badge bg-light text-dark border">35 Alumnos</span>
+                                        <button class="btn btn-sm btn-outline-primary">Ver Curso</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-top border-4 border-success shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">Estructura de Datos</h5>
+                                    <p class="card-text text-muted">Sección 003-V (Vespertino)</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="badge bg-light text-dark border">28 Alumnos</span>
+                                        <button class="btn btn-sm btn-outline-success">Ver Curso</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="ps-4">Estudiante</th>
-                                    <th>Causa Principal (IA)</th>
-                                    <th style="width: 30%;">Probabilidad Deserción</th>
-                                    <th>Asistencia</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-riesgo">
-                               
-                            </tbody>
-                        </table>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- SECCIÓN 3: INGRESO DE NOTAS                  -->
+                <!-- ============================================ -->
+                <div id="section-notas" class="content-section">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-0">Evaluación 1: Modelo Entidad-Relación</h5>
+                                <span class="badge bg-primary">Ponderación 20%</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-striped mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Estudiante</th>
+                                        <th>RUT</th>
+                                        <th>Nota Actual</th>
+                                        <th>Ingresar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="ps-4">Juan Pérez</td>
+                                        <td>20.123.456-7</td>
+                                        <td>-</td>
+                                        <td><input type="number" class="form-control form-control-sm w-50" placeholder="1.0 - 7.0"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ps-4">Ana Rojas</td>
+                                        <td>18.333.444-K</td>
+                                        <td>-</td>
+                                        <td><input type="number" class="form-control form-control-sm w-50" placeholder="1.0 - 7.0"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer bg-white text-end">
+                            <button class="btn btn-success" onclick="alert('Notas guardadas temporalmente')">Guardar Cambios</button>
+                        </div>
                     </div>
                 </div>
+
+                 <!-- ============================================ -->
+                <!-- SECCIÓN 4: ASISTENCIA                        -->
+                <!-- ============================================ -->
+                <div id="section-asistencia" class="content-section">
+                    <div class="alert alert-info text-center">
+                        <h4><i class="bi bi-qr-code-scan"></i> Escanear QR</h4>
+                        <p>Proyecte este código para que los alumnos registren su asistencia.</p>
+                        <i class="bi bi-qr-code display-1"></i>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -188,12 +293,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // DATOS MOCK
+        // SPA NAVIGATION LOGIC
+        function showSection(sectionId) {
+            // Ocultar todas
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            // Mostrar seleccionada
+            document.getElementById('section-' + sectionId).classList.add('active');
+            document.getElementById('link-' + sectionId).classList.add('active');
+
+            // Actualizar Título
+            const titles = {
+                'dashboard': 'Monitor de Riesgo Académico',
+                'asignaturas': 'Mis Asignaturas Vigentes',
+                'notas': 'Libro de Calificaciones',
+                'asistencia': 'Control de Asistencia'
+            };
+            document.getElementById('page-title').innerText = titles[sectionId];
+        }
+
+        // DATOS MOCK RIESGO
         const riesgosMock = [
             { nombre: "Carlos Diaz", motivo: "Bajo Rendimiento (Parcial 1)", prob: 85, asist: 60, img: "bi-person-circle" },
-            { nombre: "Ana Rojas", motivo: "Ausentismo Crítico", prob: 92, asist: 45, img: "bi-person-square" }, // CASO CRÍTICO
+            { nombre: "Ana Rojas", motivo: "Ausentismo Crítico", prob: 92, asist: 45, img: "bi-person-square" }, // ALTO RIESGO
             { nombre: "Pedro Pascal", motivo: "Problemas Financieros", prob: 60, asist: 80, img: "bi-person" },
-            { nombre: "Luis Chodil", motivo: "Sin actividad en Aula Virtual", prob: 95, asist: 32, img: "bi-person-fill" } // CASO CRÍTICO
+            { nombre: "Luis Chodil", motivo: "Sin actividad en Aula Virtual", prob: 95, asist: 32, img: "bi-person-fill" } // ALTO RIESGO
         ];
 
         const tbody = document.getElementById('tabla-riesgo');
@@ -201,19 +326,16 @@
 
         riesgosMock.forEach(r => {
             
-            
-            let colorBarra = 'bg-primary'; // Default
-            let textoRiesgo = 'Bajo';
+            // BUG INTENCIONAL 2 (DEF-SAT-002): Lógica Inversa
+            let colorBarra = 'bg-primary'; 
 
             if (r.prob > 90) {
-                // BUG: Si es altísimo riesgo (>90), le ponemos VERDE (success)
+                // BUG: Riesgo Crítico (>90) se pinta VERDE (Success)
                 colorBarra = 'bg-success'; 
-                textoRiesgo = 'Crítico';
             } else if (r.prob > 60) {
                 colorBarra = 'bg-warning';
-                textoRiesgo = 'Medio';
             } else {
-                colorBarra = 'bg-danger'; // Y si es bajo riesgo, le ponemos ROJO (ilógico)
+                colorBarra = 'bg-danger'; 
             }
 
             html += `
@@ -242,7 +364,7 @@
                     <span class="fw-bold ${r.asist < 50 ? 'text-danger' : 'text-dark'}">${r.asist}%</span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-outline-danger" onclick="alert('Funcionalidad simulada: Enviando alerta a ${r.nombre}')">
+                    <button class="btn btn-sm btn-outline-danger" onclick="alert('Enviando alerta...')">
                         <i class="bi bi-bell"></i> Intervenir
                     </button>
                 </td>

@@ -44,6 +44,7 @@
             font-weight: 500;
             border-radius: 5px;
             transition: all 0.2s;
+            cursor: pointer; /* Mano al pasar mouse */
         }
 
         .nav-link:hover {
@@ -65,6 +66,38 @@
             transition: transform 0.3s;
         }
         .kpi-card:hover { transform: translateY(-5px); }
+
+        /* LÓGICA DE SPA (Ocultar/Mostrar secciones) */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilos Kanban */
+        .kanban-col {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 400px;
+        }
+        .kanban-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid #11998e;
+            cursor: move;
+        }
+        .kanban-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
 
@@ -72,8 +105,8 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- SIDEBAR CRM -->
-            <div class="col-md-2 sidebar p-0 d-none d-md-block">
+            <!-- SIDEBAR CRM (Fijo) -->
+            <div class="col-md-2 sidebar p-0 d-none d-md-block fixed-top" style="height: 100vh; width: 16.666667%;">
                 <div class="user-profile">
                     <div class="user-avatar">
                         <i class="bi bi-headset"></i>
@@ -84,13 +117,26 @@
 
                 <div class="nav flex-column px-3">
                     <small class="text-white-50 text-uppercase mb-2 fw-bold" style="font-size: 0.7rem;">Gestión de Ventas</small>
-                    <a href="#" class="nav-link active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-                    <a href="#" class="nav-link"><i class="bi bi-funnel me-2"></i> Pipeline de Leads</a>
-                    <a href="#" class="nav-link"><i class="bi bi-list-task me-2"></i> Tareas y Seguimiento</a>
+                    
+                    <!-- Enlaces con ONCLICK para la navegación -->
+                    <a onclick="showSection('dashboard')" class="nav-link active" id="link-dashboard">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                    <a onclick="showSection('pipeline')" class="nav-link" id="link-pipeline">
+                        <i class="bi bi-funnel me-2"></i> Pipeline de Leads
+                    </a>
+                    <a onclick="showSection('tareas')" class="nav-link" id="link-tareas">
+                        <i class="bi bi-list-task me-2"></i> Tareas
+                    </a>
                     
                     <small class="text-white-50 text-uppercase mb-2 mt-4 fw-bold" style="font-size: 0.7rem;">Marketing</small>
-                    <a href="#" class="nav-link"><i class="bi bi-megaphone me-2"></i> Campañas</a>
-                    <a href="#" class="nav-link"><i class="bi bi-whatsapp me-2"></i> Mensajería Masiva</a>
+                    
+                    <a onclick="showSection('campanas')" class="nav-link" id="link-campanas">
+                        <i class="bi bi-megaphone me-2"></i> Campañas
+                    </a>
+                    <a onclick="showSection('mensajes')" class="nav-link" id="link-mensajes">
+                        <i class="bi bi-whatsapp me-2"></i> Mensajería
+                    </a>
                     
                     <div class="mt-5 pt-3 border-top border-white-50">
                         <a href="index.html" class="nav-link text-white"><i class="bi bi-box-arrow-left me-2"></i> Salir</a>
@@ -98,103 +144,297 @@
                 </div>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL -->
-            <div class="col-md-10 p-4 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-secondary fw-bold">Dashboard de Admisión 2025</h2>
-                    <button class="btn btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalLead">
-                        <i class="bi bi-plus-lg"></i> Nuevo Interesado
-                    </button>
-                </div>
-
-                <!-- KPIs -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="card kpi-card bg-white shadow-sm p-3">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <small class="text-muted">Total Leads</small>
-                                    <h3 class="fw-bold mb-0">845</h3>
-                                </div>
-                                <div class="icon-shape bg-light text-primary rounded-circle p-3">
-                                    <i class="bi bi-people-fill fs-4"></i>
-                                </div>
-                            </div>
-                        </div>
+            <!-- CONTENIDO PRINCIPAL (Con Offset para sidebar fijo) -->
+            <div class="col-md-10 offset-md-2 p-4 bg-light" style="min-height: 100vh;">
+                
+                <!-- HEADER GLOBAL -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                        <h2 class="text-secondary fw-bold" id="page-title">Dashboard de Admisión 2025</h2>
+                        <p class="text-muted mb-0">Bienvenida, Paula. Tienes 5 tareas pendientes hoy.</p>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card kpi-card bg-white shadow-sm p-3">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <small class="text-muted">Matriculados</small>
-                                    <h3 class="fw-bold mb-0">120</h3>
-                                </div>
-                                <div class="icon-shape bg-light text-success rounded-circle p-3">
-                                    <i class="bi bi-check-lg fs-4"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                  
-                    <div class="col-md-3">
-                        <div class="card kpi-card bg-white shadow-sm p-3 border-danger border-1">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <small class="text-muted">Tasa Conversión</small>
-                                    <!-- Aquí está el error lógico matemático -->
-                                    <h3 class="fw-bold mb-0 text-danger">150%</h3>
-                                </div>
-                                <div class="icon-shape bg-danger bg-opacity-10 text-danger rounded-circle p-3">
-                                    <i class="bi bi-graph-up-arrow fs-4"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <div class="card kpi-card bg-white shadow-sm p-3">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <small class="text-muted">Meta Mensual</small>
-                                    <h3 class="fw-bold mb-0">85%</h3>
-                                </div>
-                                <div class="icon-shape bg-light text-warning rounded-circle p-3">
-                                    <i class="bi bi-trophy-fill fs-4"></i>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                         <button class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalLead">
+                            <i class="bi bi-plus-lg"></i> Nuevo Interesado
+                        </button>
                     </div>
                 </div>
 
-                <!-- TABLA DE LEADS -->
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold">Últimos Prospectos</h5>
+                <!-- ============================================= -->
+                <!-- SECCIÓN 1: DASHBOARD (Bug KPI 150%)           -->
+                <!-- ============================================= -->
+                <div id="section-dashboard" class="content-section active">
+                    <!-- KPIs -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card kpi-card bg-white shadow-sm p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Total Leads</small>
+                                        <h3 class="fw-bold mb-0">845</h3>
+                                    </div>
+                                    <div class="icon-shape bg-light text-primary rounded-circle p-3">
+                                        <i class="bi bi-people-fill fs-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card kpi-card bg-white shadow-sm p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Matriculados</small>
+                                        <h3 class="fw-bold mb-0">120</h3>
+                                    </div>
+                                    <div class="icon-shape bg-light text-success rounded-circle p-3">
+                                        <i class="bi bi-check-lg fs-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- BUG INTENCIONAL (DEF-CRM-007): 150% Tasa -->
+                        <div class="col-md-3">
+                            <div class="card kpi-card bg-white shadow-sm p-3 border-danger border-1">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Tasa Conversión</small>
+                                        <h3 class="fw-bold mb-0 text-danger">150%</h3> <!-- BUG -->
+                                    </div>
+                                    <div class="icon-shape bg-danger bg-opacity-10 text-danger rounded-circle p-3">
+                                        <i class="bi bi-graph-up-arrow fs-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card kpi-card bg-white shadow-sm p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Meta Mensual</small>
+                                        <h3 class="fw-bold mb-0">85%</h3>
+                                    </div>
+                                    <div class="icon-shape bg-light text-warning rounded-circle p-3">
+                                        <i class="bi bi-trophy-fill fs-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4">Nombre</th>
-                                    <th>Carrera de Interés</th>
-                                    <th>Fuente</th>
-                                    <th>Teléfono</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-crm">
-                                <!-- JS llenará esto -->
-                            </tbody>
-                        </table>
+
+                    <!-- TABLA LEADS -->
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">Últimos Prospectos</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Nombre</th>
+                                        <th>Carrera de Interés</th>
+                                        <th>Fuente</th>
+                                        <th>Teléfono</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-crm">
+                                    <!-- JS Load -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ============================================= -->
+                <!-- SECCIÓN 2: PIPELINE (KANBAN)                  -->
+                <!-- ============================================= -->
+                <div id="section-pipeline" class="content-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="fw-bold text-muted mb-3"><i class="bi bi-circle-fill text-info me-2"></i> Nuevos (Fríos)</h6>
+                            <div class="kanban-col">
+                                <div class="kanban-card">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Pedro Pascal</strong>
+                                        <span class="badge bg-info text-dark">Nuevo</span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Ing. Informática</small>
+                                    <div class="mt-2 text-end text-muted small">Hace 2 horas</div>
+                                </div>
+                                <div class="kanban-card">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Gabriela Mistral</strong>
+                                        <span class="badge bg-info text-dark">Nuevo</span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Pedagogía</small>
+                                    <div class="mt-2 text-end text-muted small">Hace 4 horas</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6 class="fw-bold text-muted mb-3"><i class="bi bi-circle-fill text-warning me-2"></i> En Seguimiento</h6>
+                            <div class="kanban-col">
+                                <div class="kanban-card" style="border-left-color: #f1c40f;">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Elon Musk</strong>
+                                        <span class="badge bg-warning text-dark">Llamar</span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Mecánica Automotriz</small>
+                                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-sm btn-success rounded-circle"><i class="bi bi-whatsapp"></i></button>
+                                        <small class="text-muted">Ayer</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6 class="fw-bold text-muted mb-3"><i class="bi bi-circle-fill text-success me-2"></i> Matriculados (Ganados)</h6>
+                            <div class="kanban-col">
+                                <div class="kanban-card" style="border-left-color: #2ecc71;">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Ada Lovelace</strong>
+                                        <span class="badge bg-success">Cerrado</span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Ing. Software</small>
+                                    <div class="mt-2 text-end text-success small fw-bold"><i class="bi bi-check-circle"></i> Pagado</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- SECCIÓN 3: TAREAS                             -->
+                <!-- ============================================= -->
+                <div id="section-tareas" class="content-section">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Agenda del Ejecutivo</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
+                                <span class="pt-1 form-checked-content">
+                                    <strong>Llamar a prospectos de Feria Vocacional</strong>
+                                    <small class="d-block text-muted">20 Contactos pendientes - Prioridad Alta</small>
+                                </span>
+                            </label>
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="checkbox" value="" checked style="font-size: 1.375em;">
+                                <span class="pt-1 form-checked-content text-decoration-line-through text-muted">
+                                    <strong>Reunión de equipo semanal</strong>
+                                    <small class="d-block">Sala de reuniones 1 - 09:00 AM</small>
+                                </span>
+                            </label>
+                            <label class="list-group-item d-flex gap-3">
+                                <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
+                                <span class="pt-1 form-checked-content">
+                                    <strong>Enviar brochure digital a interesados de Enfermería</strong>
+                                    <small class="d-block text-muted">Campaña Email - Prioridad Media</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- SECCIÓN 4: CAMPAÑAS                           -->
+                <!-- ============================================= -->
+                <div id="section-campanas" class="content-section">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-facebook fs-1 text-primary me-3"></i>
+                                        <div>
+                                            <h5 class="mb-0">Meta Ads (Facebook/Instagram)</h5>
+                                            <small class="text-muted">Campaña: Admisión Temprana</small>
+                                        </div>
+                                    </div>
+                                    <h2 class="display-6 fw-bold">520 Leads</h2>
+                                    <div class="progress mt-3" style="height: 10px;">
+                                        <div class="progress-bar" style="width: 75%"></div>
+                                    </div>
+                                    <div class="mt-3 d-flex justify-content-between small text-muted">
+                                        <span>Gasto: $450.000</span>
+                                        <span>Costo/Lead: $865</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-google fs-1 text-warning me-3"></i>
+                                        <div>
+                                            <h5 class="mb-0">Google Search</h5>
+                                            <small class="text-muted">Keywords: "Estudiar Técnico"</small>
+                                        </div>
+                                    </div>
+                                    <h2 class="display-6 fw-bold">180 Leads</h2>
+                                    <div class="progress mt-3" style="height: 10px;">
+                                        <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                    </div>
+                                    <div class="mt-3 d-flex justify-content-between small text-muted">
+                                        <span>Gasto: $320.000</span>
+                                        <span>Costo/Lead: $1.770</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- SECCIÓN 5: MENSAJERÍA                         -->
+                <!-- ============================================= -->
+                <div id="section-mensajes" class="content-section">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h4 class="mb-4"><i class="bi bi-chat-dots-fill text-success"></i> Centro de Mensajería Masiva</h4>
+                            <form>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Canal de Envío</label>
+                                        <select class="form-select">
+                                            <option>WhatsApp Business API</option>
+                                            <option>SMS</option>
+                                            <option>Email Marketing</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Segmento Objetivo</label>
+                                        <select class="form-select">
+                                            <option>Todos los "Nuevos Ingresos"</option>
+                                            <option>Pendientes de Pago Matrícula</option>
+                                            <option>Interesados en Informática</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Plantilla del Mensaje</label>
+                                    <textarea class="form-control" rows="5" placeholder="Hola {nombre}, te recordamos que..."></textarea>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="alert('Enviando campaña a 150 contactos...')">
+                                    <i class="bi bi-send-fill me-2"></i> Enviar Ahora
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- MODAL NUEVO LEAD  -->
+    <!-- MODAL NUEVO LEAD (BUG VALIDACIÓN) -->
     <div class="modal fade" id="modalLead" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -216,18 +456,18 @@
                                 <option>Mecánica Automotriz</option>
                             </select>
                         </div>
-                       
+                        <!-- BUG INTENCIONAL 2 (DEF-CRM-001) -->
                         <div class="mb-3">
                             <label class="form-label">Teléfono Móvil</label>
-                            <!-- type="text" permite letras, y no validaremos en JS -->
                             <input type="text" class="form-control" id="leadTelefono" placeholder="+569..." required>
-                            <div class="form-text text-muted">Bug: Intenta escribir "hola" aquí.</div>
+                            <div class="form-text text-muted">Bug: Intenta escribir "hola" aquí. El sistema lo permitirá.</div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="guardarLead()">Guardar</button>
+                    <!-- CLICK GUARDA SIN VALIDAR -->
+                    <button type="button" class="btn btn-success" onclick="guardarLead()">Guardar Lead</button>
                 </div>
             </div>
         </div>
@@ -236,7 +476,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // DATOS MOCK
+        // === LÓGICA SPA (NAVEGACIÓN) ===
+        function showSection(sectionId) {
+            // 1. Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            
+            // 2. Desactivar todos los links del sidebar
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            // 3. Activar sección y link seleccionados
+            document.getElementById('section-' + sectionId).classList.add('active');
+            document.getElementById('link-' + sectionId).classList.add('active');
+
+            // 4. Actualizar título de la página
+            const titles = {
+                'dashboard': 'Dashboard de Admisión 2025',
+                'pipeline': 'Pipeline de Oportunidades',
+                'tareas': 'Mis Tareas y Agenda',
+                'campanas': 'Rendimiento de Marketing',
+                'mensajes': 'Centro de Mensajería'
+            };
+            document.getElementById('page-title').innerText = titles[sectionId];
+        }
+
+        // === DATOS MOCK ===
         const leadsMock = [
             { nombre: "Kevin Mitnick", carrera: "Ciberseguridad", fuente: "Instagram", etapa: "Nuevo", tel: "+56911111111" },
             { nombre: "Ada Lovelace", carrera: "Ing. Software", fuente: "Google Ads", etapa: "Matriculado", tel: "+56922222222" },
@@ -268,31 +531,34 @@
             tbody.innerHTML = html;
         }
 
-      
+        // === BUG: GUARDAR SIN VALIDAR ===
         function guardarLead() {
             const nombre = document.getElementById('leadNombre').value;
             const carrera = document.getElementById('leadCarrera').value;
             const tel = document.getElementById('leadTelefono').value;
 
-           
+            // BUG (DEF-CRM-001): No validamos si tel son solo números.
             
-            leadsMock.unshift({
-                nombre: nombre,
-                carrera: carrera,
-                fuente: "Manual",
-                etapa: "Nuevo",
-                tel: tel // Se guarda el texto
-            });
+            if(nombre) {
+                leadsMock.unshift({
+                    nombre: nombre,
+                    carrera: carrera,
+                    fuente: "Manual",
+                    etapa: "Nuevo",
+                    tel: tel // Se guarda aunque sea texto
+                });
 
-            // Cerrar modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalLead'));
-            modal.hide();
-            
-            // Repintar
-            renderTabla();
-            alert("Prospecto guardado exitosamente.");
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalLead'));
+                modal.hide();
+                
+                renderTabla();
+                alert("Lead guardado exitosamente.\n(Si pusiste letras en el teléfono, el sistema lo aceptó igual -> Bug).");
+            } else {
+                alert("Ingresa un nombre al menos.");
+            }
         }
 
+        // Init
         renderTabla();
     </script>
 
