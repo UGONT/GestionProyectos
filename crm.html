@@ -4,32 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAA - Gestión Académica</title>
+    <title>CRM Educativo - Admisión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        /* Un poco de estilo para el sidebar */
+        /* ESTÉTICA CRM - Ventas y Marketing */
         .sidebar {
             min-height: 100vh;
-            background-color: #2c3e50;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Gradiente Verde Moderno */
             color: white;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .user-profile {
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            color: #11998e;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 5px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            background-color: #34495e;
-            color: white;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            padding: 12px 20px;
+            font-weight: 500;
             border-radius: 5px;
+            transition: all 0.2s;
         }
 
-        .nav-link i {
-            margin-right: 10px;
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(5px);
         }
+
+        .nav-link.active {
+            background-color: white;
+            color: #11998e;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .kpi-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        .kpi-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 
@@ -37,40 +72,120 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 sidebar p-3">
-                <h4 class="text-center mb-4"><i class="bi bi-grid-1x2-fill"></i> Ecosistema</h4>
-                <div class="nav flex-column">
-                    <a href="sigaa.html" class="nav-link"><i class="bi bi-journal-text"></i> SIGAA</a>
-                    <a href="alerta.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Alerta
-                        Temprana</a>
-                    <a href="campus.html" class="nav-link"><i class="bi bi-laptop"></i> Campus Virtual</a>
-                    <a href="crm.html" class="nav-link active"><i class="bi bi-people"></i> CRM Educativo</a>
+            <!-- SIDEBAR CRM -->
+            <div class="col-md-2 sidebar p-0 d-none d-md-block">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h6 class="mb-0 text-white">Paula Araya</h6>
+                    <small class="text-white-50">Jefa de Admisión</small>
+                </div>
+
+                <div class="nav flex-column px-3">
+                    <small class="text-white-50 text-uppercase mb-2 fw-bold" style="font-size: 0.7rem;">Gestión de Ventas</small>
+                    <a href="#" class="nav-link active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                    <a href="#" class="nav-link"><i class="bi bi-funnel me-2"></i> Pipeline de Leads</a>
+                    <a href="#" class="nav-link"><i class="bi bi-list-task me-2"></i> Tareas y Seguimiento</a>
+                    
+                    <small class="text-white-50 text-uppercase mb-2 mt-4 fw-bold" style="font-size: 0.7rem;">Marketing</small>
+                    <a href="#" class="nav-link"><i class="bi bi-megaphone me-2"></i> Campañas</a>
+                    <a href="#" class="nav-link"><i class="bi bi-whatsapp me-2"></i> Mensajería Masiva</a>
+                    
+                    <div class="mt-5 pt-3 border-top border-white-50">
+                        <a href="index.html" class="nav-link text-white"><i class="bi bi-box-arrow-left me-2"></i> Salir</a>
+                    </div>
                 </div>
             </div>
 
+            <!-- CONTENIDO PRINCIPAL -->
             <div class="col-md-10 p-4 bg-light">
-                <h2 class="mb-4"><i class="bi bi-people text-success"></i> CRM de Admisión</h2>
-
-                <div class="btn-group mb-4">
-                    <button class="btn btn-outline-secondary active">Todos</button>
-                    <button class="btn btn-outline-secondary">Nuevos Leads</button>
-                    <button class="btn btn-outline-secondary">En Seguimiento</button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-secondary fw-bold">Dashboard de Admisión 2025</h2>
+                    <button class="btn btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalLead">
+                        <i class="bi bi-plus-lg"></i> Nuevo Interesado
+                    </button>
                 </div>
 
-                <div class="card">
+                <!-- KPIs -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card kpi-card bg-white shadow-sm p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">Total Leads</small>
+                                    <h3 class="fw-bold mb-0">845</h3>
+                                </div>
+                                <div class="icon-shape bg-light text-primary rounded-circle p-3">
+                                    <i class="bi bi-people-fill fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card kpi-card bg-white shadow-sm p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">Matriculados</small>
+                                    <h3 class="fw-bold mb-0">120</h3>
+                                </div>
+                                <div class="icon-shape bg-light text-success rounded-circle p-3">
+                                    <i class="bi bi-check-lg fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                  
+                    <div class="col-md-3">
+                        <div class="card kpi-card bg-white shadow-sm p-3 border-danger border-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">Tasa Conversión</small>
+                                    <!-- Aquí está el error lógico matemático -->
+                                    <h3 class="fw-bold mb-0 text-danger">150%</h3>
+                                </div>
+                                <div class="icon-shape bg-danger bg-opacity-10 text-danger rounded-circle p-3">
+                                    <i class="bi bi-graph-up-arrow fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card kpi-card bg-white shadow-sm p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">Meta Mensual</small>
+                                    <h3 class="fw-bold mb-0">85%</h3>
+                                </div>
+                                <div class="icon-shape bg-light text-warning rounded-circle p-3">
+                                    <i class="bi bi-trophy-fill fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA DE LEADS -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Últimos Prospectos</h5>
+                    </div>
                     <div class="card-body p-0">
-                        <table class="table table-striped mb-0">
-                            <thead class="bg-dark text-white">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Prospecto</th>
-                                    <th>Interés (Carrera)</th>
+                                    <th class="ps-4">Nombre</th>
+                                    <th>Carrera de Interés</th>
                                     <th>Fuente</th>
-                                    <th>Etapa</th>
-                                    <th>Último Contacto</th>
+                                    <th>Teléfono</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-crm">
+                                <!-- JS llenará esto -->
                             </tbody>
                         </table>
                     </div>
@@ -79,43 +194,107 @@
         </div>
     </div>
 
+    <!-- MODAL NUEVO LEAD  -->
+    <div class="modal fade" id="modalLead" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Registrar Nuevo Prospecto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formLead">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="leadNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Carrera</label>
+                            <select class="form-select" id="leadCarrera">
+                                <option>Ing. Informática</option>
+                                <option>Enfermería</option>
+                                <option>Mecánica Automotriz</option>
+                            </select>
+                        </div>
+                       
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono Móvil</label>
+                            <!-- type="text" permite letras, y no validaremos en JS -->
+                            <input type="text" class="form-control" id="leadTelefono" placeholder="+569..." required>
+                            <div class="form-text text-muted">Bug: Intenta escribir "hola" aquí.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="guardarLead()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // DATOS MOCK: CRM
-    const leadsMock = [
-        { nombre: "Kevin Mitnick", carrera: "Ciberseguridad", fuente: "Instagram", etapa: "Nuevo", fecha: "Hace 2 horas" },
-        { nombre: "Ada Lovelace", carrera: "Ing. Software", fuente: "Google Ads", etapa: "Matriculado", fecha: "Ayer" },
-        { nombre: "Elon M.", carrera: "Ing. Aeroespacial", fuente: "Feria Vocacional", etapa: "Seguimiento", fecha: "Hace 3 días" }
-    ];
+        // DATOS MOCK
+        const leadsMock = [
+            { nombre: "Kevin Mitnick", carrera: "Ciberseguridad", fuente: "Instagram", etapa: "Nuevo", tel: "+56911111111" },
+            { nombre: "Ada Lovelace", carrera: "Ing. Software", fuente: "Google Ads", etapa: "Matriculado", tel: "+56922222222" },
+            { nombre: "Elon M.", carrera: "Mecánica", fuente: "Feria Vocacional", etapa: "Seguimiento", tel: "+56933333333" }
+        ];
 
-    const tbodyCrm = document.getElementById('tabla-crm');
-    let htmlCrm = '';
+        function renderTabla() {
+            const tbody = document.getElementById('tabla-crm');
+            let html = '';
+            leadsMock.forEach(lead => {
+                let badge = 'bg-secondary';
+                if(lead.etapa === 'Nuevo') badge = 'bg-info text-dark';
+                if(lead.etapa === 'Matriculado') badge = 'bg-success';
+                if(lead.etapa === 'Seguimiento') badge = 'bg-warning text-dark';
 
-    leadsMock.forEach(lead => {
-        // Estilo para las etapas
-        let badge = 'bg-secondary';
-        if(lead.etapa === 'Nuevo') badge = 'bg-primary';
-        if(lead.etapa === 'Matriculado') badge = 'bg-success';
-        if(lead.etapa === 'Seguimiento') badge = 'bg-warning text-dark';
+                html += `
+                <tr>
+                    <td class="ps-4 fw-bold">${lead.nombre}</td>
+                    <td>${lead.carrera}</td>
+                    <td><i class="bi bi-globe"></i> ${lead.fuente}</td>
+                    <td>${lead.tel}</td>
+                    <td><span class="badge ${badge}">${lead.etapa}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-whatsapp"></i></button>
+                    </td>
+                </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
 
-        htmlCrm += `
-            <tr>
-                <td class="fw-bold">${lead.nombre}</td>
-                <td>${lead.carrera}</td>
-                <td><i class="bi bi-globe"></i> ${lead.fuente}</td>
-                <td><span class="badge ${badge}">${lead.etapa}</span></td>
-                <td>${lead.fecha}</td>
-                <td>
-                    <button class="btn btn-sm btn-success" title="Llamar"><i class="bi bi-telephone"></i></button>
-                    <button class="btn btn-sm btn-primary" title="Whatsapp"><i class="bi bi-whatsapp"></i></button>
-                </td>
-            </tr>
-        `;
-    });
-    tbodyCrm.innerHTML = htmlCrm;
-</script>
+      
+        function guardarLead() {
+            const nombre = document.getElementById('leadNombre').value;
+            const carrera = document.getElementById('leadCarrera').value;
+            const tel = document.getElementById('leadTelefono').value;
+
+           
+            
+            leadsMock.unshift({
+                nombre: nombre,
+                carrera: carrera,
+                fuente: "Manual",
+                etapa: "Nuevo",
+                tel: tel // Se guarda el texto
+            });
+
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalLead'));
+            modal.hide();
+            
+            // Repintar
+            renderTabla();
+            alert("Prospecto guardado exitosamente.");
+        }
+
+        renderTabla();
+    </script>
 
 </body>
-
 </html>

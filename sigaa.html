@@ -4,14 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAA - Gestión Académica (Con Bugs)</title>
+    <title>SIGAA - Intranet Administrativa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        .sidebar { min-height: 100vh; background-color: #2c3e50; color: white; }
-        .nav-link { color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; }
-        .nav-link:hover, .nav-link.active { background-color: #34495e; color: white; border-radius: 5px; }
-        .nav-link i { margin-right: 10px; }
+        /* ESTÉTICA SIGAA - Institucional y Seria */
+        .sidebar {
+            min-height: 100vh;
+            background-color: #003366; /* Azul Oscuro Institucional */
+            color: white;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .brand-section {
+            padding: 20px;
+            background-color: #002244;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 15px;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: #0056b3;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Avatar pequeño para el admin */
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #6c757d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
     </style>
 </head>
 
@@ -19,64 +59,62 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 sidebar p-3">
-                <h4 class="text-center mb-4"><i class="bi bi-grid-1x2-fill"></i> Ecosistema</h4>
+            <!-- SIDEBAR ADMINISTRATIVO -->
+            <div class="col-md-2 sidebar p-0 d-none d-md-block">
+                <div class="brand-section">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-bank2"></i> SIGAA v2.0</h5>
+                    <small class="text-white-50">Gestión Académica</small>
+                </div>
+                
+                <div class="p-3 d-flex align-items-center border-bottom border-white-50 mb-3">
+                    <div class="admin-avatar me-2"><i class="bi bi-person-fill"></i></div>
+                    <div style="line-height: 1.2;">
+                        <span class="d-block fw-bold" style="font-size: 0.9rem;">Patricio Núñez</span>
+                        <small class="text-white-50" style="font-size: 0.75rem;">Director Académico</small>
+                    </div>
+                </div>
+
                 <div class="nav flex-column">
-                    <a href="sigaa.html" class="nav-link active"><i class="bi bi-journal-text"></i> SIGAA</a>
-                    <a href="alerta.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Alerta Temprana</a>
-                    <a href="campus.html" class="nav-link"><i class="bi bi-laptop"></i> Campus Virtual</a>
-                    <a href="crm.html" class="nav-link"><i class="bi bi-people"></i> CRM Educativo</a>
+                    <small class="text-white-50 text-uppercase px-4 mb-2 fw-bold" style="font-size: 0.7rem;">Registro Curricular</small>
+                    <a href="#" class="nav-link active"><i class="bi bi-people-fill me-2"></i> Estudiantes</a>
+                    <a href="#" class="nav-link"><i class="bi bi-briefcase-fill me-2"></i> Docentes</a>
+                    <a href="#" class="nav-link"><i class="bi bi-journal-bookmark-fill me-2"></i> Malla y Cursos</a>
+                    
+                    <small class="text-white-50 text-uppercase px-4 mb-2 mt-3 fw-bold" style="font-size: 0.7rem;">Administración</small>
+                    <a href="#" class="nav-link"><i class="bi bi-file-earmark-text me-2"></i> Certificados</a>
+                    <a href="#" class="nav-link"><i class="bi bi-gear-fill me-2"></i> Configuración</a>
+                    
+                    <div class="mt-5 px-3">
+                        <a href="index.html" class="btn btn-outline-light w-100 btn-sm"><i class="bi bi-power"></i> Cerrar Sesión</a>
+                    </div>
                 </div>
             </div>
 
+            <!-- CONTENIDO PRINCIPAL -->
             <div class="col-md-10 p-4 bg-light">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="bi bi-journal-text text-primary"></i> Módulo SIGAA</h2>
+                    <h2 class="text-dark fw-bold">Listado Maestro de Estudiantes</h2>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMatricula">
-                        <i class="bi bi-plus-circle"></i> Matricular Alumno
+                        <i class="bi bi-person-plus-fill"></i> Nueva Matrícula
                     </button>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card text-white bg-success mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Alumnos Activos</h5>
-                                <p class="card-text fs-2 fw-bold">1,240</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-white bg-warning mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Pendientes</h5>
-                                <p class="card-text fs-2 fw-bold">45</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-white bg-info mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Docentes</h5>
-                                <p class="card-text fs-2 fw-bold">86</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Listado Maestro de Estudiantes</h5>
+                <!-- CARD TABLE -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-muted">Registros Activos</h5>
+                        
+                        <!-- BUG INTENCIONAL 1 (DEF-SIGAA-002): BUSCADOR ROTO -->
                         <div class="input-group w-25">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" id="buscador" placeholder="Buscar alumno..." onkeyup="buscarAlumno()">
+                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="buscador" placeholder="Buscar por RUT o Nombre..." onkeyup="buscarAlumno()">
                         </div>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead class="table-light">
+                    <div class="card-body p-0">
+                        <table class="table table-striped table-hover mb-0 align-middle">
+                            <thead class="bg-light text-secondary">
                                 <tr>
-                                    <th>ID</th>
+                                    <th class="ps-4">ID / RUT</th>
                                     <th>Nombre Completo</th>
                                     <th>Carrera</th>
                                     <th>Semestre</th>
@@ -85,23 +123,32 @@
                                 </tr>
                             </thead>
                             <tbody id="tabla-estudiantes">
-                                </tbody>
+                                <!-- JS -->
+                            </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer bg-white py-3">
+                        <small class="text-muted">Mostrando 5 de 2500 registros</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL MATRICULA -->
     <div class="modal fade" id="modalMatricula" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Nueva Matrícula</h5>
+                    <h5 class="modal-title">Ficha de Matrícula 2025</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formMatricula">
+                        <div class="mb-3">
+                            <label class="form-label">RUT Estudiante</label>
+                            <input type="text" class="form-control" required>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Nombre Completo</label>
                             <input type="text" class="form-control" id="nuevoNombre" required>
@@ -117,8 +164,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarAlumno()">Guardar Registro</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <!-- BUG INTENCIONAL 2 (DEF-SIGAA-001): CLICK NO GUARDA -->
+                    <button type="button" class="btn btn-primary" onclick="guardarAlumno()">Confirmar Matrícula</button>
                 </div>
             </div>
         </div>
@@ -127,84 +175,60 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // DATOS INICIALES
         const estudiantesMock = [
-            { id: "2024001", nombre: "Juan Pérez", carrera: "Ing. Informática", semestre: 3, estado: "Activo" },
-            { id: "2024002", nombre: "Maria Gonzalez", carrera: "Enfermería", semestre: 1, estado: "Activo" },
-            { id: "2024003", nombre: "Carlos Diaz", carrera: "Ing. Informática", semestre: 5, estado: "En Riesgo" },
-            { id: "2024004", nombre: "Ana Rojas", carrera: "Derecho", semestre: 2, estado: "Retirado" },
-            { id: "2024005", nombre: "Luis Silva", carrera: "Ing. Informática", semestre: 7, estado: "Activo" }
+            { id: "20.123.456-7", nombre: "Juan Pérez", carrera: "Ing. Informática", semestre: 3, estado: "Activo" },
+            { id: "19.876.543-2", nombre: "Maria Gonzalez", carrera: "Enfermería", semestre: 1, estado: "Activo" },
+            { id: "21.111.222-3", nombre: "Carlos Diaz", carrera: "Ing. Informática", semestre: 5, estado: "En Riesgo" },
+            { id: "18.333.444-K", nombre: "Ana Rojas", carrera: "Derecho", semestre: 2, estado: "Retirado" },
+            { id: "22.555.666-8", nombre: "Luis Silva", carrera: "Ing. Informática", semestre: 7, estado: "Activo" }
         ];
 
-        // RENDERIZAR TABLA
-        function cargarTabla(datos = estudiantesMock) {
+        function cargarTabla() {
             const tbody = document.getElementById('tabla-estudiantes');
             let html = '';
-
-            datos.forEach(est => {
-                let badgeColor = 'bg-success';
-                if (est.estado === 'En Riesgo') badgeColor = 'bg-warning text-dark';
-                if (est.estado === 'Retirado') badgeColor = 'bg-danger';
+            estudiantesMock.forEach(est => {
+                let badge = 'bg-success';
+                if(est.estado === 'En Riesgo') badge = 'bg-warning text-dark';
+                if(est.estado === 'Retirado') badge = 'bg-danger';
 
                 html += `
                 <tr>
-                    <td>${est.id}</td>
-                    <td><strong>${est.nombre}</strong></td>
+                    <td class="ps-4 text-muted font-monospace">${est.id}</td>
+                    <td class="fw-bold">${est.nombre}</td>
                     <td>${est.carrera}</td>
                     <td>${est.semestre}</td>
-                    <td><span class="badge ${badgeColor}">${est.estado}</span></td>
+                    <td><span class="badge ${badge}">${est.estado}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                     </td>
                 </tr>
-            `;
+                `;
             });
             tbody.innerHTML = html;
         }
 
-
-   
+        
         function guardarAlumno() {
-            const nombre = document.getElementById('nuevoNombre').value;
-            const carrera = document.getElementById('nuevaCarrera').value;
-
-            if(nombre === '') {
-                alert("Por favor ingrese un nombre");
-                return;
-            }
-
             
-            console.log("Simulando guardado de: " + nombre); 
-            
-
-            const modalElement = document.getElementById('modalMatricula');
-            const modal = bootstrap.Modal.getInstance(modalElement);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalMatricula'));
             modal.hide();
 
-            alert("Error al ingresar estudiante.")
-            /* alert("¡Éxito! Estudiante matriculado correctamente."); */
+            // Mensaje de éxito falso
+            alert("¡Matrícula realizada exitosamente!");
             
-           
-            cargarTabla(); 
+            // Recargamos la tabla 
+            cargarTabla();
         }
 
-      
+        // BUG 2: BUSCADOR ROTO
         function buscarAlumno() {
-            const textoBusqueda = document.getElementById('buscador').value.toLowerCase();
-            
-            console.log("Intentando buscar: " + textoBusqueda);
-                     
-            /* const filtrados = estudiantesMock.filter(est => 
-                est.nombre.toLowerCase().includes(textoBusqueda)
-            );
-            cargarTabla(filtrados); 
-            */
-
-
+            const val = document.getElementById('buscador').value;
+            console.log("Escribiendo: " + val);
+            // No hay lógica de filtrado aquí. La tabla no cambia.
         }
 
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', () => cargarTabla());
+        cargarTabla();
     </script>
 
 </body>
